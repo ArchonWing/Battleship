@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 
 public class SimpleBattleshipGame {
@@ -45,25 +45,25 @@ public class SimpleBattleshipGame {
 
 			System.out.println("Come back later");
 
-		//	player input game			
+			//	player input game			
 		} else if(gameType ==2 ){
 
 			this.displayBoard();
-			
+
 			//open new input scanner
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			
+
 			int guess = 0;
 
 			//while there are still hull locations to hit
 			while(!hull.isEmpty()){
-				
+
 				//show remaining board guesses
 				//this.displayBoard();
 				//this.displayHull();
-				
+
 				//get user guess
-				
+
 				System.out.print("Enter shot location: ");
 				try {
 					guess = Integer.parseInt(br.readLine());
@@ -72,25 +72,25 @@ public class SimpleBattleshipGame {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				//refuse input if guess is not in board locations
 				if(board.contains(guess)){
-					
+
 					//remove guess from board locations
 					board.remove(board.indexOf(guess));
-					
+
 					if(hull.contains(guess)){
 						System.out.println("Hit!");
 						hull.remove(hull.indexOf(guess));
 					} else {
 						System.out.println("Miss!");
 					}
-					
+
 				} else {
 					System.out.println("Please enter valid board location");
 				}
 			}
-			
+
 			System.out.println("\nYou won!");
 
 		}
@@ -107,17 +107,18 @@ public class SimpleBattleshipGame {
 		System.out.println("\n");
 
 	}
-	private void displayHull() {
-		System.out.print("Ship locations are at: ");
-		for(int x: hull){
-			System.out.print(x + " ");
-		}
-		System.out.println("\n");
-		
-	}
+	//	private void displayHull() {
+	//		System.out.print("Ship locations are at: ");
+	//		for(int x: hull){
+	//			System.out.print(x + " ");
+	//		}
+	//		System.out.println("\n");
+	//		
+	//	}
+
 
 	//	method for printing values
-/*	private void printValues() {
+	/*	private void printValues() {
 
 		System.out.print("Board locations are at: ");
 		for(int x: board){
