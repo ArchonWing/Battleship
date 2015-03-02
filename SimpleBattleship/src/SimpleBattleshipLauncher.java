@@ -34,6 +34,8 @@ public class SimpleBattleshipLauncher {
 		//run game
 		g.runGame();
 
+		System.out.println("Git works!");
+		
 	}
 
 }
