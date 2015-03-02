@@ -33,6 +33,7 @@ public class SimpleBattleshipLauncher {
 
 		//run game
 		g.runGame();
+		
 
 	}
 
