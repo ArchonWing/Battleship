@@ -2,14 +2,12 @@
 public class Ship {
 
 	private String name;
+	private int size;
 
-	public String getName() {
-		return name;
+	public Ship(String n, int s) {
+		name = n;
+		size = s;
+		
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	
 }
