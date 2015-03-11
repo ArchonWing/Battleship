@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Board {
@@ -15,6 +16,9 @@ public class Board {
 
 	//array list to hold ships
 	ArrayList<Ship> ships;
+
+	//integer to represent ship length
+
 
 
 	//constructor to build board based on provided height and width
@@ -36,13 +40,17 @@ public class Board {
 
 		//initialize ships
 		ships = new ArrayList<Ship>();
-		ships.add(new Ship("Bismark", 3));
-		ships.add(new Ship("Yamato", 3));
-		ships.add(new Ship("Red October", 3));
-		
+		ships.add(new Ship("Bismark", 5, 1));
+		ships.add(new Ship("Yamato", 4, 2));
+		ships.add(new Ship("Red October", 2, 3));
+
 		//set ships on board
-		for(int x = 0; x < ships.size(); x++){
-			 
+		for(Ship x: ships){
+			if(!this.placeShip(x)){
+				System.out.println("Too many ships for board size, exiting application.");
+				System.exit(0);
+			}
+			
 		}
 
 	}
@@ -74,14 +82,183 @@ public class Board {
 		}
 
 	}
+	
+	
+	public void displayPlayerBoard(){
+		//build first row 
+		String row = spacing + " ";
+		for(int x = 0; x < columns; x++){
+			row += (String.valueOf(x+1) + spacing);
+		}
+		//display first row
+		System.out.println(row + "\n");
+
+		//display remaining rows
+		for(int x=0; x < rows; x++){
+
+			row = "";
+
+			//display row letter
+			row += getCharForNumber(x+1) + spacing;
+
+			//populate board
+			for(int y=0; y< columns; y++){
+				if(cells[x][y] == 'H'  || cells[x][y] == 'M'  )
+					row += cells[x][y] + spacing;
+				else
+					row += "0" + spacing;
+			}
+
+			//display row
+			System.out.println(row + "\n");
+		}
+
+	}
 
 
 	private String getCharForNumber(int i) {
 		return i > 0 && i < 27 ? String.valueOf((char)(i + 'A' - 1)) : null;
 	}
 
-	public void placeShip(Ship s) {
 
+	public boolean placeShip(Ship s) {
+
+		//randomize vertical or horizontal placement
+		Random rnd = new Random();
+		boolean across = rnd.nextBoolean();
+
+		//try to place ship horizontally, the vertically
+		if(across){
+			if(this.placeShipHorizontal(s)){
+				return true;
+			}
+			else if(this.placeShipVertical(s)){
+				return true;
+			}
+		}
+		//try to place ship vertically, then horizontally
+		else{
+			if(this.placeShipVertical(s)){
+				return true;
+			}
+			else if(this.placeShipHorizontal(s)){
+				return true;
+			}
+
+		}
+
+		//return whether or not ship has been successfully placed or not
+		return false;
+	}
+
+
+
+	private boolean placeShipHorizontal(Ship s) {
+		
+		
+
+		//find all locations where a ship can be placed horizontally
+
+		//array list to hold all possible coordinates
+		ArrayList<Coordinate> spots = new ArrayList<Coordinate>();
+
+		for(int y = 0; y < this.rows; y++){
+			for(int x = 0; x < (this.columns - s.getSize() + 1); x++){
+
+				boolean room = true;
+
+				for(int z = x; z < x + s.getSize(); z++){
+					if (this.cells[y][z] != '0'){
+						room = false;
+						break;
+					}
+				}
+
+				if(room){
+					spots.add(new Coordinate(x,y));
+				}
+			}
+		}
+
+		//		//select random available coordinate to add ship
+		if(spots.size() > 0){
+			Random rnd = new Random();
+			int position = rnd.nextInt(spots.size());
+
+			int j = spots.get(position).getX();
+			int k = spots.get(position).getY();
+
+			System.out.println("Number of possible positions: " + spots.size());
+			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
+
+			for(int x = j; x < j + s.getSize(); x ++){
+				this.cells[k][x] = '1';
+			}
+			
+			return true;
+
+		} else {
+			return false;
+		}
+	}
+
+	private boolean placeShipVertical(Ship s) {
+		
+
+
+		//find all locations where a ship can be placed vertically
+
+		//array list to hold all possible coordinates
+		ArrayList<Coordinate> spots = new ArrayList<Coordinate>();
+
+		for(int y = 0; y < this.rows - s.getSize() + 1; y++){
+			for(int x = 0; x < this.columns; x++){
+
+				boolean room = true;
+
+				for(int z = y; z < y + s.getSize(); z++){
+					if (this.cells[z][x] != '0'){
+						room = false;
+						break;
+					}
+				}
+
+				if(room){
+					spots.add(new Coordinate(x,y));
+				}
+			}
+		}
+		
+		if(spots.size() > 0){
+			Random rnd = new Random();
+			int position = rnd.nextInt(spots.size());
+
+			int j = spots.get(position).getX();
+			int k = spots.get(position).getY();
+
+			System.out.println("Number of possible positions: " + spots.size());
+			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
+
+			for(int y = k; y < k + s.getSize(); y ++){
+				this.cells[y][j] = '1';
+			}
+			
+			return true;
+
+		} else {
+			return false;
+		}
+		
+		
+	}
+
+	//main for testing things 'n stuff
+	public static void main(String[] args){
+
+
+		Board b = new Board(5, 7);
+		b.displayBoard();
+		b.displayPlayerBoard();
 
 
 	}
