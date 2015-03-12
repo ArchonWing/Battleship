@@ -17,6 +17,9 @@ public class Board {
 	//array list to hold ships
 	ArrayList<Ship> ships;
 
+	//int to hold remaining ship count
+	int shipsLeft;
+
 	//integer to represent ship length
 
 
@@ -40,9 +43,15 @@ public class Board {
 
 		//initialize ships
 		ships = new ArrayList<Ship>();
-		ships.add(new Ship("Bismark", 5, 1));
-		ships.add(new Ship("Yamato", 4, 2));
-		ships.add(new Ship("Red October", 2, 3));
+		ships.add(new Ship("my Carrier", 5, 1));
+		ships.add(new Ship("my Battleship", 4, 2));
+		ships.add(new Ship("my Submarine", 3, 3));
+		ships.add(new Ship("my Destroyer", 3, 4));
+		ships.add(new Ship("my Patrol Boat", 2, 5));
+
+		//initialize ships left counter
+		shipsLeft = 5;
+
 
 		//set ships on board
 		for(Ship x: ships){
@@ -50,7 +59,7 @@ public class Board {
 				System.out.println("Too many ships for board size, exiting application.");
 				System.exit(0);
 			}
-			
+
 		}
 
 	}
@@ -82,8 +91,8 @@ public class Board {
 		}
 
 	}
-	
-	
+
+
 	public void displayPlayerBoard(){
 		//build first row 
 		String row = spacing + " ";
@@ -112,6 +121,9 @@ public class Board {
 			//display row
 			System.out.println(row + "\n");
 		}
+
+		//print spacing line
+		System.out.println("");
 
 	}
 
@@ -154,8 +166,8 @@ public class Board {
 
 
 	private boolean placeShipHorizontal(Ship s) {
-		
-		
+
+
 
 		//find all locations where a ship can be placed horizontally
 
@@ -188,13 +200,13 @@ public class Board {
 			int j = spots.get(position).getX();
 			int k = spots.get(position).getY();
 
-			System.out.println("Number of possible positions: " + spots.size());
-			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
+			//			System.out.println("Number of possible positions: " + spots.size());
+			//			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
 
 			for(int x = j; x < j + s.getSize(); x ++){
-				this.cells[k][x] = '1';
+				this.cells[k][x] = s.getCharShipNumber();
 			}
-			
+
 			return true;
 
 		} else {
@@ -203,7 +215,7 @@ public class Board {
 	}
 
 	private boolean placeShipVertical(Ship s) {
-		
+
 
 
 		//find all locations where a ship can be placed vertically
@@ -228,7 +240,7 @@ public class Board {
 				}
 			}
 		}
-		
+
 		if(spots.size() > 0){
 			Random rnd = new Random();
 			int position = rnd.nextInt(spots.size());
@@ -236,31 +248,90 @@ public class Board {
 			int j = spots.get(position).getX();
 			int k = spots.get(position).getY();
 
-			System.out.println("Number of possible positions: " + spots.size());
-			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
+			//			System.out.println("Number of possible positions: " + spots.size());
+			//			System.out.println("Start position is: " + (j+1) + ", " + (k+1));
 
 			for(int y = k; y < k + s.getSize(); y ++){
-				this.cells[y][j] = '1';
+				this.cells[y][j] = s.getCharShipNumber();
 			}
-			
+
 			return true;
 
 		} else {
 			return false;
 		}
-		
-		
+
+
 	}
 
 	//main for testing things 'n stuff
 	public static void main(String[] args){
 
-
-		Board b = new Board(5, 7);
+		Board b = new Board(8, 8);
 		b.displayBoard();
 		b.displayPlayerBoard();
 
 
 	}
+
+	
+
+	public void checkShot(Coordinate shot) {
+
+		int x = shot.getX();
+		int y = shot.getY();
+
+		//check to make sure coordinate falls on board
+		if( x < 0 || x > (columns - 1) || y < 0 || y > (rows -1)){
+			System.out.println("Please enter valid coordinate.\n");
+			return;
+		}
+
+		//check to make sure shot has not been guessed before
+		if(cells[y][x] == 'H' || cells[y][x] == 'M'){
+			System.out.println("You have already guessed this location, please guess again.\n");
+			return;
+		}
+
+		//miss result
+		if(cells[y][x] == '0'){
+			cells[y][x] = 'M';
+			System.out.println("Miss!\n");
+			this.displayPlayerBoard();
+
+
+			//hit result
+		} else {
+			int shipNum = Character.digit(cells[y][x], 10) - 1;
+
+			cells[y][x] = 'H';
+			System.out.println("Hit!\n");
+
+			Ship targetShip = ships.get(shipNum);
+
+			targetShip.takeDamage();
+
+			if (targetShip.getSize() == 0){
+				shipsLeft --;
+				System.out.println("You sunk " + targetShip.getName() + "!!!\n");
+			}
+
+			this.displayPlayerBoard();
+		}
+
+
+
+
+	}
+
+	public boolean shipsLeft() {
+
+		if(shipsLeft > 0)
+			return true;
+		else 
+			return false;
+		
+	}
+
 
 }

@@ -22,6 +22,15 @@ public class Coordinate {
 	public void setY(int y) {
 		this.column = y;
 	}
+	public static Coordinate convertCoordinates(String input) {
+		
+		int j = (int)(Character.toUpperCase(input.charAt(0)) - 65);
+		
+		int k = Character.getNumericValue(input.charAt(1)) - 1;
+		
+		return new Coordinate(k,j);
+		
+	}
 	
 	
 	

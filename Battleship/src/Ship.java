@@ -36,4 +36,14 @@ public class Ship {
 		
 	}
 
+	public char getCharShipNumber() {
+		
+		return (char)('0' + shipNumber);
+		
+	}
+
+	public void takeDamage() {
+		size -= 1;
+	}
+
 }

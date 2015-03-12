@@ -1,13 +1,12 @@
+import java.io.IOException;
+
 
 public class BattleshipLauncher {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// create new battleship game
 		Battleship g = new Battleship();
-
-		//setup battleship game
-		g.setUpGame();
 		
 		// run battleship game
 		g.runGame();
